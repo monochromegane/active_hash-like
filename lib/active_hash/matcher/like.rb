@@ -17,6 +17,10 @@ module ActiveHash::Matcher
     attr_accessor :pattern, :match
 
     def initialize(pattern, match=:partial)
+      unless %i(forward backward partial).include?(match.to_sym)
+        raise ArgumentError, 'unknown match type'
+      end
+
       self.pattern = pattern
       self.match   = match.to_sym
     end
