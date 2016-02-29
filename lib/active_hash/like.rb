@@ -1,7 +1,7 @@
 require "active_hash/like/version"
+require "active_hash/custom_matchable"
 
 module ActiveHash
   module Like
-    # Your code goes here...
   end
 end
