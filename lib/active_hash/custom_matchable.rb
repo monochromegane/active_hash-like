@@ -7,6 +7,14 @@ module ActiveHash
     end
 
     module ClassMethods
+
+      def like(options)
+        where(options.inject({}) do |likes, (column, pattern)|
+          likes[column] = ActiveHash::Matcher::Like.new(pattern)
+          likes
+        end)
+      end
+
       def where(options)
         return @records if options.nil?
         (@records || []).select do |record|

@@ -2,27 +2,30 @@ module ActiveHash::Matcher
   class Like
     class << self
       def forward(pattern)
-        new(pattern, :forward)
+        new("#{pattern}%")
       end
 
       def backward(pattern)
-        new(pattern, :backward)
+        new("%#{pattern}")
       end
 
       def partial(pattern)
-        new(pattern, :partial)
+        new("%#{pattern}%")
       end
     end
 
     attr_accessor :pattern, :match
 
-    def initialize(pattern, match=:partial)
-      unless %i(forward backward partial).include?(match.to_sym)
-        raise ArgumentError, 'unknown match type'
-      end
+    def initialize(pattern)
+      pattern = pattern.to_s
+      self.pattern = pattern.gsub(/\A%|%\Z/, '')
 
-      self.pattern = pattern
-      self.match   = match.to_sym
+      self.match = case pattern
+                   when /\A%.*%\Z/ then :partial
+                   when /\A%/      then :backward
+                   when /%\Z/      then :forward
+                   else                 :none
+                   end
     end
 
     def call(value)
@@ -31,7 +34,7 @@ module ActiveHash::Matcher
       when :forward  then value.start_with?(pattern)
       when :backward then value.end_with?(pattern)
       when :partial  then value.include?(pattern)
-      else false
+      else                value == pattern
       end
     end
   end
