@@ -26,10 +26,12 @@ module ActiveHash::Matcher
     end
 
     def call(value)
+      value = value.to_s
       case match
       when :forward  then value.start_with?(pattern)
       when :backward then value.end_with?(pattern)
       when :partial  then value.include?(pattern)
+      else false
       end
     end
   end
