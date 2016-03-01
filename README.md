@@ -1,8 +1,54 @@
-# ActiveHash::Like
+# ActiveHash::Like [![Build Status](https://travis-ci.org/monochromegane/active_hash-like.svg?branch=master)](https://travis-ci.org/monochromegane/active_hash-like)
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/active_hash/like`. To experiment with that code, run `bin/console` for an interactive prompt.
+Custom matcher for ActiveHash. It provides `like` operator.
 
-TODO: Delete this and the text above, and describe your gem
+## Usage
+
+After install ActiveHash::Like, you can use `like` method.
+
+```rb
+class Country < ActiveHash::Base; end
+
+Country.like(name: 'Cana%')
+```
+
+If you want to use `like` in the where method parameter, you can use `ActiveHash::Match::Like` matcher.
+
+```rb
+# Specify match type.
+Country.where(name: ActiveHash::Match::Like.new('Cana%'))
+
+# Or use forward, backward, partial method.
+Country.where(name: ActiveHash::Match::Like.forward('Cana'))
+```
+
+## Custom matcher
+
+`ActiveHash::Match::Like` is one of custom matcher. You can create your custom matcher.
+It should have `call` method like the following:
+
+```rb
+class MyCustomMatcher
+  attr_accessor :pattern
+
+  def initialize(pattern)
+    self.pattern = pattern
+  end
+
+  def call(value)
+    # Case ignore matcher
+    value.upcase == pattern.upcase
+  end
+end
+
+Country.where(name: MyCustomMatcher.new('pattern'))
+```
+
+So, you can use `Proc` object as simple custom matcher.
+
+```rb
+Country.where(name: ->(value){ value == 'some value'})
+```
 
 ## Installation
 
@@ -19,10 +65,6 @@ And then execute:
 Or install it yourself as:
 
     $ gem install active_hash-like
-
-## Usage
-
-TODO: Write usage instructions here
 
 ## Development
 
