@@ -14,23 +14,28 @@ module ActiveHash::Matcher
       end
     end
 
-    attr_accessor :pattern, :match
+    attr_accessor :pattern, :match_type
 
     def initialize(pattern)
       pattern = pattern.to_s
       self.pattern = pattern.gsub(/\A%|%\Z/, '')
 
-      self.match = case pattern
-                   when /\A%.*%\Z/ then :partial
-                   when /\A%/      then :backward
-                   when /%\Z/      then :forward
-                   else                 :none
-                   end
+      self.match_type = case pattern
+                        when /\A%.*%\Z/ then :partial
+                        when /\A%/      then :backward
+                        when /%\Z/      then :forward
+                        else                 :none
+                        end
     end
 
     def call(value)
-      value = value.to_s
-      case match
+      match(value.to_s.upcase, pattern.upcase)
+    end
+
+    private
+
+    def match(value, pattern)
+      case match_type
       when :forward  then value.start_with?(pattern)
       when :backward then value.end_with?(pattern)
       when :partial  then value.include?(pattern)
