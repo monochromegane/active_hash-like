@@ -21,6 +21,8 @@ module ActiveHash
           options.all? do |col, matcher|
             if matcher.respond_to?(:call)
               matcher.call(record[col])
+            elsif col.to_sym == :or
+              ActiveHash::Matcher::Or.new(matcher).call(record)
             else
               record[col] == matcher
             end
