@@ -50,6 +50,21 @@ So, you can use `Proc` object as simple custom matcher.
 Country.where(name: ->(value){ value == 'some value'})
 ```
 
+## OR condition
+
+you can use key: `or` like the following:
+
+```rb
+Country.where(name: 'Canada', or: {field1: 'foo', field2: 'bar'})
+#=> name = 'Canada' and (field1 = 'foo' or field2 = 'bar')
+```
+
+If you want to use `or` to one column, you must use custom matcher.
+
+```rb
+Country.where(name: ->(val){val == 'Canada' || val == 'US'})
+```
+
 ## Installation
 
 Add this line to your application's Gemfile:
