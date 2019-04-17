@@ -12,19 +12,19 @@ class Country < ActiveHash::Base; end
 Country.like(name: 'Cana%')
 ```
 
-If you want to use `like` in the where method parameter, you can use `ActiveHash::Match::Like` matcher.
+If you want to use `like` in the where method parameter, you can use `ActiveHash::Matcher::Like` matcher.
 
 ```rb
 # Specify match type.
-Country.where(name: ActiveHash::Match::Like.new('Cana%'))
+Country.where(name: ActiveHash::Matcher::Like.new('Cana%'))
 
 # Or use forward, backward, partial method.
-Country.where(name: ActiveHash::Match::Like.forward('Cana'))
+Country.where(name: ActiveHash::Matcher::Like.forward('Cana'))
 ```
 
 ## Custom matcher
 
-`ActiveHash::Match::Like` is one of custom matcher. You can create your custom matcher.
+`ActiveHash::Matcher::Like` is one of custom matcher. You can create your custom matcher.
 It should have `call` method like the following:
 
 ```rb
